@@ -6,11 +6,13 @@ const OverviewPage = () => {
 
     const [income, setIncome] = useState(0);
     const [maaser, setMaaser] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     const getOverview = async () => {
         const { data } = await axios.get(`/api/maaser/getOverview`);
         setIncome(data.income);
         setMaaser(data.maaser);
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -18,7 +20,8 @@ const OverviewPage = () => {
     }, []);
 
 
-  return (
+    return (
+       
     <Container
       maxWidth="md"
       sx={{
@@ -29,28 +32,31 @@ const OverviewPage = () => {
         height: '80vh',
         textAlign: 'center'
       }}
-    >
-      <Paper elevation={20} sx={{ padding: '25px', borderRadius: '15px' }}>
-        <Typography variant="h2" gutterBottom>
-          Overview
-        </Typography>
-        <Box sx={{ marginBottom: '20px' }}>
-          <Typography variant="h5" gutterBottom>
-                      Total Income: ${income.toFixed(2)}
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-                      Total Maaser: ${maaser.toFixed(2) }
-          </Typography>
-        </Box>
-        <Box>
-          <Typography variant="h5" gutterBottom>
-                      Maaser Obligated: ${(+income * .10).toFixed(2) }
-          </Typography>
-          <Typography variant="h5" gutterBottom>
-                      Remaining Maaser obligation: ${((+income*.10)-maaser).toFixed(2) }
-          </Typography>
-        </Box>
-      </Paper>
+        >
+            {isLoading ? <Typography variant="h2" gutterBottom>
+                Loading...
+            </Typography> :
+                <Paper elevation={20} sx={{ padding: '25px', borderRadius: '15px' }}>
+                    <Typography variant="h2" gutterBottom>
+                        Overview
+                    </Typography>
+                    <Box sx={{ marginBottom: '20px' }}>
+                        <Typography variant="h5" gutterBottom>
+                            Total Income: ${income.toFixed(2)}
+                        </Typography>
+                        <Typography variant="h5" gutterBottom>
+                            Total Maaser: ${maaser.toFixed(2)}
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography variant="h5" gutterBottom>
+                            Maaser Obligated: ${(+income * .10).toFixed(2)}
+                        </Typography>
+                        <Typography variant="h5" gutterBottom>
+                            Remaining Maaser obligation: ${((+income * .10) - maaser).toFixed(2)}
+                        </Typography>
+                    </Box>
+                </Paper>}
     </Container>
   );
 }

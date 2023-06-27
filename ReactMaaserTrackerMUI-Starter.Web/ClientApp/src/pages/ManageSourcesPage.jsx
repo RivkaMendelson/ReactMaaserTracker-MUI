@@ -1,4 +1,4 @@
-import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box } from '@mui/material';
+import { Container, Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Box } from '@mui/material';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
@@ -7,12 +7,14 @@ const ManageSourcesPage = () => {
     const [open, setOpen] = useState(false);
     const [selectedSource, setSelectedSource] = useState("");
     const [editingSourceId, setEditingSourceId] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
 
         const getSources = async () => {
             const { data } = await axios.get(`/api/maaser/getSources`);
             setSources(data);
+            setIsLoading(false);
         }
 
         getSources();
@@ -50,8 +52,13 @@ const ManageSourcesPage = () => {
     };
 
     return (
+        
         <Container>
-            <Box sx={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+            {isLoading ? <Typography variant="h5" gutterBottom>
+                Loading...
+            </Typography> :
+                <>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
                 <Button onClick={() => handleOpen()} variant="contained" color="primary" sx={{ minWidth: '200px' }}>
                     Add Source
                 </Button>
@@ -90,7 +97,7 @@ const ManageSourcesPage = () => {
                         {editingSourceId ? 'Save' : 'Add'}
                     </Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog></>}
         </Container>
     );
 }
