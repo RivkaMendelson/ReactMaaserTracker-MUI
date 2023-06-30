@@ -36,11 +36,15 @@ const ManageSourcesPage = () => {
 
     const handleAddEdit = async () => {
         if (editingSourceId) {
-            await axios.post("/api/maaser/editSource", { name: selectedSource, id: editingSourceId });
-            window.location.reload();
+            const { data } = await axios.post("/api/maaser/editSource", { name: selectedSource, id: editingSourceId });
+            setSources(data);
+            console.log(data)
+            //window.location.reload();
+
         } else {
-            await axios.post("/api/maaser/addSource", { name: selectedSource });
-            window.location.reload();
+            const { data } = await axios.post("/api/maaser/addSource", { name: selectedSource });
+            console.log(data);
+            setSources([...sources, data ]);
 
         }
         handleClose();
@@ -48,7 +52,7 @@ const ManageSourcesPage = () => {
 
     const handleDelete = async (sourceToDelete) => {
         await axios.post('/api/maaser/deleteSource', { id: sourceToDelete.id });
-        window.location.reload();
+        setSources(sources.filter(s => s.id !== sourceToDelete.id));
     };
 
     return (
@@ -83,7 +87,8 @@ const ManageSourcesPage = () => {
                         ))}
                     </TableBody>
                 </Table>
-            </TableContainer>
+                    </TableContainer>
+
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
                 <DialogTitle>{editingSourceId ? 'Edit Source' : 'Add Source'}</DialogTitle>
                 <DialogContent>

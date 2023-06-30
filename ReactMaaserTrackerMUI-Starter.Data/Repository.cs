@@ -19,18 +19,20 @@ namespace ReactMaaserTrackerMUI_Starter.Data
             return context.Sources.ToList();
         }
 
-        public void AddSource(Source source)
+        public Source AddSource(Source source)
         {
             using var context = new MaaserDataContext(_connectionString);
             context.Sources.Add(source);
             context.SaveChanges();
+            return new Source { Id = source.Id, Name = source.Name, Incomes = new List<Income>() };
         }
 
-        public void EditSource(Source source)
+        public List<Source> EditSource(Source source)
         {
             using var context = new MaaserDataContext(_connectionString);
             context.Sources.Update(source);
             context.SaveChanges();
+            return context.Sources.ToList();
         }
         public void DeleteSource(int id)
         {

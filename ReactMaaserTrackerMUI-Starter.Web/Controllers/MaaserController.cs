@@ -26,17 +26,17 @@ namespace ReactMaaserTrackerMUI_Starter.Web.Controllers
         }
 
         [Route("addSource")]
-        public void AddSource(Source source)
+        public Source AddSource(Source source)
         {
             var repo = new Repository(_connectionString);
-            repo.AddSource(source);
+            return repo.AddSource(source);
         }
 
         [Route("editSource")]
-        public void EditSource(Source source)
+        public List<Source> EditSource(Source source)
         {
             var repo = new Repository(_connectionString);
-            repo.EditSource(source);
+            return repo.EditSource(source);
         }
 
         [Route("deleteSource")]

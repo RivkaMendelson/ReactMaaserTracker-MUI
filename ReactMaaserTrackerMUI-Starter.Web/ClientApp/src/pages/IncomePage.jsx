@@ -8,11 +8,18 @@ const IncomePage = () => {
 
     const [groupBySource, setGroupBySource] = useState(false);
     const [incomes, setIncomes] = useState([]);
-    const [groupedIncomes, setGroupedIncomes] = useState([])
+    const [groupedIncomes, setGroupedIncomes] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         getIncomes();
     }, []);
+
+    const getIncomes = async () => {
+        const { data } = await axios.get(`/api/maaser/getIncomes`);
+        setIncomes(data);
+        setIsLoading(false);
+    }
 
     useEffect(() => {
 
@@ -35,29 +42,30 @@ const IncomePage = () => {
 
     }, [groupBySource]);
 
-    const getIncomes = async () => {
-        const { data } = await axios.get(`/api/maaser/getIncomes`);
-        setIncomes(data);
-    }
+   
 
 
     return (
-        <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
-            <Typography variant="h2" gutterBottom component="div">
-                Income History
-            </Typography>
 
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={groupBySource}
-                        onChange={(event) => setGroupBySource(event.target.checked)}
-                        name="checkedB"
-                        color="primary"
-                    />
-                }
-                label="Group by source"
-            />
+        <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 3 }}>
+            {isLoading ? <Typography variant="h2" gutterBottom>
+                Loading...
+            </Typography> : <>
+                <Typography variant="h2" gutterBottom component="div">
+                    Income History
+                </Typography>
+
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={groupBySource}
+                            onChange={(event) => setGroupBySource(event.target.checked)}
+                            name="checkedB"
+                            color="primary"
+                        />
+                    }
+                    label="Group by source"
+                /></>}
 
             {!groupBySource ? (
                 <TableContainer component={Paper} sx={{ maxWidth: '80%', width: '80%' }}>
@@ -89,9 +97,10 @@ const IncomePage = () => {
                             {income.source}
                         </Typography>
                         <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 650 }}>
+                            <Table sx={{ minWidth: 550 }}>
                                 <TableHead>
                                     <TableRow>
+                                        <TableCell align="right" sx={{ fontSize: '18px' }}>Source</TableCell>
                                         <TableCell align="right" sx={{ fontSize: '18px' }}>Amount</TableCell>
                                         <TableCell align="right" sx={{ fontSize: '18px' }}>Date</TableCell>
                                     </TableRow>
@@ -99,7 +108,7 @@ const IncomePage = () => {
                                 <TableBody>
                                     {income.income.map((i) => (
                                         <TableRow key={income.id}>
-                                           
+                                            <TableCell align="right" sx={{ fontSize: '18px' }}>{income.source}</TableCell>
                                             <TableCell align="right" sx={{ fontSize: '18px' }}>${i.amount}</TableCell>
                                             <TableCell align="right" sx={{ fontSize: '18px' }}>{dayjs(i.date).format('YYYY-MM-DD')}</TableCell>
                                         </TableRow>
